@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Line Generator</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 30px;
+            max-width: 600px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="color"] {
+            width: 60px;
+            height: 40px;
+            padding: 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #0366d6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+        button:hover {
+            background-color: #005cc5;
+        }
+        .btn-secondary {
+            background-color: #6e7681;
+        }
+        .btn-secondary:hover {
+            background-color: #8b949e;
+        }
+        #copyBtn {
+            background-color: #2ea043;
+        }
+        #copyBtn:hover {
+            background-color: #2c974b;
+        }
+        #hexInput {
+            max-width: 120px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-group">
+        <label for="colorPicker">1. Choose a color:</label>
+        <div class="input-group">
+            <input type="color" id="colorPicker" value="#FFC618">
+            <input type="text" id="hexInput" value="#FFC618" maxlength="7">
+            <button id="randomBtn" class="btn-secondary">Random</button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="badgeCode">2. Badge code (Markdown):</label>
+        <div class="input-group">
+            <input type="text" id="badgeCode" readonly>
+            <button id="copyBtn">Copy</button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button id="downloadBtn">3. Save SVG</button>
+    </div>
+</div>
+
+<script>
+    const colorPicker = document.getElementById('colorPicker');
+    const hexInput = document.getElementById('hexInput');
+    const randomBtn = document.getElementById('randomBtn');
+    const badgeCode = document.getElementById('badgeCode');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const copyBtn = document.getElementById('copyBtn');
+
+    function updateBadgeCode() {
+        const hex = colorPicker.value.substring(1).toUpperCase();
+        badgeCode.value = `[![animated-line](https://github.com/readme-SVG/animated-line/blob/main/STORAGE/line-svg-${hex}.svg)](https://github.com/readme-SVG/animated-line)`;
+    }
+
+    colorPicker.addEventListener('input', () => {
+        hexInput.value = colorPicker.value.toUpperCase();
+        updateBadgeCode();
+    });
+
+    hexInput.addEventListener('input', () => {
+        let val = hexInput.value;
+        if (!val.startsWith('#')) val = '#' + val;
+        if (/^#[0-9A-F]{6}$/i.test(val)) {
+            colorPicker.value = val;
+            updateBadgeCode();
+        }
+    });
+
+    randomBtn.addEventListener('click', () => {
+        const randomHex = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0').toUpperCase();
+        colorPicker.value = randomHex;
+        hexInput.value = randomHex;
+        updateBadgeCode();
+    });
+
+    copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(badgeCode.value).then(() => {
+            const originalText = copyBtn.innerText;
+            copyBtn.innerText = 'Copied!';
+            setTimeout(() => {
+                copyBtn.innerText = originalText;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+    });
+
+    downloadBtn.addEventListener('click', () => {
+        const hex = colorPicker.value.substring(1).toUpperCase();
+        
+        const svgContent = `<svg width="900" height="14" viewBox="0 0 900 14" xmlns="http://www.w3.org/2000/svg">
+  <metadata>
+    Created by OstinUA and readme-SVG org
+    https://github.com/readme-SVG/animated-line
+  </metadata>
+  <path 
+    d="M0 7 Q171 12 283 7 Q395 2 566 7 Q738 12 900 7" 
+    stroke="black" 
+    stroke-width="3" 
+    fill="none" 
+    stroke-linecap="round"
+  >
+    <animate 
+      attributeName="d" 
+      dur="4s" 
+      repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"
+      keyTimes="0; 0.33; 0.66; 1"
+      values="
+        M0 7 Q171 12 283 7 Q395 2 566 7 Q738 12 900 7; 
+        M0 7 Q141 7 283 7 Q425 7 566 7 Q708 7 900 7; 
+        M0 7 Q111 2 283 7 Q455 12 566 7 Q678 2 900 7; 
+        M0 7 Q171 12 283 7 Q395 2 566 7 Q738 12 900 7
+      " 
+    />
+  </path>
+
+  <path 
+    d="M0 7 Q141 7 283 7 Q425 7 566 7 Q708 7 900 7" 
+    stroke="#${hex}" 
+    stroke-width="3" 
+    fill="none" 
+    stroke-linecap="round"
+  >
+    <animate 
+      attributeName="d" 
+      dur="4s" 
+      repeatCount="indefinite"
+      calcMode="spline"
+      keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"
+      keyTimes="0; 0.33; 0.66; 1"
+      values="
+        M0 7 Q141 7 283 7 Q425 7 566 7 Q708 7 900 7; 
+        M0 7 Q111 2 283 7 Q455 12 566 7 Q678 2 900 7; 
+        M0 7 Q171 12 283 7 Q395 2 566 7 Q738 12 900 7; 
+        M0 7 Q141 7 283 7 Q425 7 566 7 Q708 7 900 7
+      " 
+    />
+  </path>
+</svg>`;
+
+        const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        
+        a.href = url;
+        a.download = `line-svg-${hex}.svg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    updateBadgeCode();
+</script>
+
+</body>
+</html>
