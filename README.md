@@ -1,3 +1,13 @@
+[![animated-line](https://github.com/readme-SVG/animated-line/blob/main/STORAGE/line-svg-3D444D.svg)](https://github.com/readme-SVG/animated-line)
+
+<details>
+  <summary>Animated line for copying</summary>
+
+```
+[![animated-line](https://github.com/readme-SVG/animated-line/blob/main/STORAGE/line-svg-3D444D.svg)](https://github.com/readme-SVG/animated-line)
+```
+</details>
+
 [![animated-line](https://github.com/readme-SVG/animated-line/blob/main/STORAGE/line-svg-3E80ED.svg)](https://github.com/readme-SVG/animated-line)
 
 <details>
